@@ -31,19 +31,17 @@ module Lascivious
   # Flash for all kiss metrics
   def kiss_metrics_flash
     messages = flash[:kiss_metrics]
-    unless messages.blank? || messages.empty?
-      return messages.map do |type_hash|
-        type_hash.map do |e|
-          %Q{_kmq.push(['#{e.first.to_s}', '#{e.last.to_s}']);}
-        end
-      end.flatten.join("\n")
+    if messages.blank? || messages.empty?
+      return nil
     end
-    return nil
+    messages.map do |message|
+      "_kmq.push(#{message.to_json});"
+    end.join('\n').html_safe
   end
 
   # Trigger an event at Kiss (specific: message of event_type 'record', e.g. User Signed Up)
-  def kiss_record(value)
-    kiss_metric :record, value
+  def kiss_record(value, properties={})
+    kiss_metric :record, value, properties
   end
 
   # Set values (e.g. country: uk)
@@ -62,9 +60,11 @@ module Lascivious
   end
 
   # Record an arbitrary event-type and its value.
-  def kiss_metric(event_type, value)
+  def kiss_metric(event_type, value, properties = {})
     flash[:kiss_metrics] ||= []
-    flash[:kiss_metrics] << { event_type => value }
+    metric = [ event_type, value ]
+    metric << properties if properties.any?
+    flash[:kiss_metrics] << metric
   end
 
   # Get kiss metrics key
