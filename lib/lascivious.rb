@@ -36,7 +36,7 @@ module Lascivious
     end
     messages.map do |message|
       "_kmq.push(#{message.to_json});"
-    end.join('\n').html_safe
+    end.join.html_safe
   end
 
   # Trigger an event at Kiss (specific: message of event_type 'record', e.g. User Signed Up)
