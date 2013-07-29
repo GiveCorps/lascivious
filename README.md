@@ -33,13 +33,26 @@ with, usually all of them, e.g. here's what our header partial looks like:
 
 5. Now all you have to do is add KISSmetricss tags in controllers or views wherever you need something. For instance:
 
+When used in a controller where the view is displayed as part of the action
+```ruby
+class SomeController < ApplicationController
+  def index
+    kiss_record_now "SomeController loaded"
+  end
+end
+```
+
+If using in a controller action that contains a redirect, use
+
 ```ruby
 class SomeController < ApplicationController
   def index
     kiss_record "SomeController loaded"
+    redirect_to "some path"
   end
 end
 ```
+
 
 Currently the following commands are provided:
 
