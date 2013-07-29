@@ -59,12 +59,39 @@ module Lascivious
     kiss_metric :alias, value
   end
 
+  def kiss_record_now(value, properties={})
+    kiss_metric_now :record, value, properties
+  end
+
+  # Set values (e.g. country: uk)
+  def kiss_set_now(value)
+    kiss_metric_now :set, value
+  end
+
+  # Strong identifier (e.g. user ID)
+  def kiss_identify_now(value)
+    kiss_metric_now :identify, value
+  end
+
+  # Weak identifier (e.g. cookie)
+  def kiss_alias_now(value)
+    kiss_metric_now :alias, value
+  end
+
   # Record an arbitrary event-type and its value.
   def kiss_metric(event_type, value, properties = {})
     flash[:kiss_metrics] ||= []
     metric = [ event_type, value ]
     metric << properties if properties.any?
     flash[:kiss_metrics] << metric
+  end
+
+  # Record an arbitrary event-type and its value.
+  def kiss_metric_now(event_type, value, properties = {})
+    flash.now[:kiss_metrics] ||= []
+    metric = [ event_type, value ]
+    metric << properties if properties.any?
+    flash.now[:kiss_metrics] << metric
   end
 
   # Get kiss metrics key
